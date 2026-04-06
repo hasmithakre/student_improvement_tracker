@@ -1,0 +1,15 @@
+const mongoose = require('mongoose');
+
+const assignmentSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  title: { type: String, required: true, trim: true },
+  subject: { type: String, required: true },
+  description: { type: String, trim: true },
+  dueDate: { type: Date, required: true },
+  priority: { type: String, enum: ['low', 'medium', 'high'], default: 'medium' },
+  status: { type: String, enum: ['pending', 'completed'], default: 'pending' },
+  completedAt: { type: Date },
+  createdAt: { type: Date, default: Date.now }
+});
+
+module.exports = mongoose.model('Assignment', assignmentSchema);
