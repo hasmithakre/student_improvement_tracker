@@ -9,8 +9,18 @@ const { apiLimiter, authLimiter } = require('./middleware/rateLimiter');
 
 const app = express();
 
+// Allow localhost in dev + Render frontend URL in production
+const allowedOrigins = [
+  'http://localhost:3000',
+  process.env.CLIENT_URL,
+].filter(Boolean);
+
 app.use(cors({
-  origin: ['http://localhost:3000',process.env.CLIENT_URL],
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Postman / mobile
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
